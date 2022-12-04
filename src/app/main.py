@@ -3,13 +3,13 @@ from flask_basicauth import BasicAuth
 from textblob import TextBlob
 from sklearn.linear_model import LinearRegression
 import pickle
-
+import os
 colunas = ['tamanho','ano','garagem']
-modelo = pickle.load(open('modelo.sav','rb'))
+modelo = pickle.load(open('../../models/modelo.sav','rb'))
 
 app = Flask(__name__)
-app.config['BASIC_AUTH_USERNAME'] = 'app'
-app.config['BASIC_AUTH_PASSWORD'] = 'app'
+app.config['BASIC_AUTH_USERNAME'] = os.environ.get('BASIC_AUTH_USERNAME')
+app.config['BASIC_AUTH_PASSWORD'] = os.environ.get('BASIC_AUTH_PASSWORD')
 
 basic_auth = BasicAuth(app)
 
@@ -33,4 +33,4 @@ def cotacao():
     preco = modelo.predict([dados_input])
     return jsonify(preco=preco[0])
 
-app.run(debug=True)
+app.run(debug=True, host='0.0.0.0')
